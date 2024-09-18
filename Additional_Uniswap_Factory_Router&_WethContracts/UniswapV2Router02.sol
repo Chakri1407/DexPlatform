@@ -2,14 +2,14 @@
 
 pragma solidity =0.6.6;
 // 0xb27A31f1b0AF2946B7F582768f03239b1eC07c2c
-import 'https://github.com/Uniswap/v2-core/blob/master/contracts/interfaces/IUniswapV2Factory.sol';
-import 'https://github.com/Uniswap/solidity-lib/blob/master/contracts/libraries/TransferHelper.sol';
+import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 
-import 'https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router02.sol';
-import 'https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol';
-import 'https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/SafeMath.sol';
-import 'https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IERC20.sol';
-import 'https://github.com/Uniswap/v2-periphery/blob/master/contracts/interfaces/IWETH.sol';
+import '@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol';
+import '@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol';
+import '@uniswap/v2-periphery/contracts/libraries/SafeMath.sol';
+import '@uniswap/v2-periphery/contracts/interfaces/IERC20.sol';
+import '@uniswap/v2-periphery/contracts/interfaces/IWETH.sol';
 
 contract UniswapV2Router02 is IUniswapV2Router02 {
     using SafeMath for uint;
