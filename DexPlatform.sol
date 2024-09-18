@@ -115,6 +115,7 @@ contract dexPlatform {
      @param message A message describing the log event
      @param value The value associated with the event (e.g., token amount, liquidity amount) */
     event Log(string message, uint256 value);
+    /* Here the Factory, ROUTER, WETH, tt1, tt2 are the address of contracts deployed on polygon amoy */
 
     address private constant FACTORY = 0xd2a5bC10698FD955D1Fe6cb468a17809A08fd005;
     address private constant ROUTER = 0xb27A31f1b0AF2946B7F582768f03239b1eC07c2c;
