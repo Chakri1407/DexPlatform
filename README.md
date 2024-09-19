@@ -12,11 +12,18 @@ The contract is built using Solidity and leverages Uniswap's router and factory 
 ## Contract Details
 
 ### Addresses
-- **FACTORY**: The address of the Uniswap factory used to get the pair address for liquidity pools.
-- **ROUTER**: The address of the Uniswap router used for swaps and liquidity management.
-- **WETH**: The address of the Wrapped Ether (WETH) token.
-- **TT1**: The address of Test Token 1 (TT1).
-- **TT2**: The address of Test Token 2 (TT2).
+- **FACTORY**:[0x330158E42De9e04d12f42711d00eF3C4ed03D27a](https://amoy.polygonscan.com/address/0x330158E42De9e04d12f42711d00eF3C4ed03D27a) 
+The address of the Uniswap factory used to get the pair address for liquidity pools.
+- **ROUTER**:[0x84882A460D3F7bd1a2fa98ed1470D2870C914398](https://amoy.polygonscan.com/address/0x84882A460D3F7bd1a2fa98ed1470D2870C914398) 
+The address of the Uniswap router used for swaps and liquidity management.
+- **WETH**:[0x4cA4ca0ebC0b16E4D44C0C66C6b3f8411af7446a](https://amoy.polygonscan.com/address/0x4cA4ca0ebC0b16E4D44C0C66C6b3f8411af7446a) 
+The address of the Wrapped Ether (WETH) token.
+- **TT1**:[0x01FBe68E011E86891DE01eE8c7350Ffb8465D769](https://amoy.polygonscan.com/address/0x01FBe68E011E86891DE01eE8c7350Ffb8465D769) 
+The address of Test Token 1 (TT1).
+- **TT2**:[0xa0F9970aB4c2C8234962eA3F97522fa1cdd590EC](https://amoy.polygonscan.com/address/0xa0F9970aB4c2C8234962eA3F97522fa1cdd590EC) 
+The address of Test Token 2 (TT2).
+- **Dex**:- [0x56b875BD3e2D4E145FFa2905fDfed69E8E7EcAaA](https://amoy.polygonscan.com/address/0x56b875BD3e2D4E145FFa2905fDfed69E8E7EcAaA) 
+The adress of the DexPlatform.
 
 ### Key Functions
 1. **swapSingleHopExactAmountIn(uint256 amountIn, uint256 amountOutMin)**
@@ -47,7 +54,7 @@ The contract is built using Solidity and leverages Uniswap's router and factory 
 ## Prerequisites
 
 Before you interact with this contract, ensure the following:
-1. **Node.js and npm**: Install Node.js and npm [here](https://nodejs.org/en/download/).
+1. **Node.js and npm**: Install Node.js.
 2. **Hardhat**: Hardhat is a development environment for Ethereum. Install it globally:
    ```bash
    npm install --save-dev hardhat
