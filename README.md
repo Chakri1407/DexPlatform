@@ -22,7 +22,7 @@ The address of the Wrapped Ether (WETH) token.
 The address of Test Token 1 (TT1).
 - **TT2**:[0xa0F9970aB4c2C8234962eA3F97522fa1cdd590EC](https://amoy.polygonscan.com/address/0xa0F9970aB4c2C8234962eA3F97522fa1cdd590EC) 
 The address of Test Token 2 (TT2).
-- **Dex**:- [0x56b875BD3e2D4E145FFa2905fDfed69E8E7EcAaA](https://amoy.polygonscan.com/address/0x56b875BD3e2D4E145FFa2905fDfed69E8E7EcAaA) 
+- **Dex**:- [0xC8CceAaFA7797aB78C6A783eC5d49D29E3A65e0E](https://amoy.polygonscan.com/address/0x56b875BD3e2D4E145FFa2905fDfed69E8E7EcAaA) 
 The adress of the DexPlatform.
 
 ### Key Functions

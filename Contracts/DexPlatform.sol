@@ -1,21 +1,220 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.20;
 
+// Imports the ERC20 token interface from the OpenZeppelin library, which allows interaction with ERC20 tokens.
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
-/* @title IUniswapV2Router Interface for Uniswap V2 Router
- @notice Provides functions for token swapping, liquidity management, and more */
+
+contract dexPlatform {
+
+    // Event declaration for logging messages and values.
+    event Log(string message, uint256 value);
+
+    // Deployed addresses for the Uniswap factory, router, WETH, and custom tokens (TT1 and TT2).
+    address private constant FACTORY = 0x330158E42De9e04d12f42711d00eF3C4ed03D27a;
+    address private constant ROUTER = 0x84882A460D3F7bd1a2fa98ed1470D2870C914398;
+    address private constant WETH = 0x4cA4ca0ebC0b16E4D44C0C66C6b3f8411af7446a;
+    address private constant TT1 = 0x01FBe68E011E86891DE01eE8c7350Ffb8465D769;
+    address private constant TT2 = 0xa0F9970aB4c2C8234962eA3F97522fa1cdd590EC;
+
+    // Creating instances of the router and token contracts to interact with them.
+    IUniswapV2Router private router = IUniswapV2Router(ROUTER);
+    IERC20 private weth = IERC20(WETH);
+    IERC20 private tt1 = IERC20(TT1);
+    IERC20 private tt2 = IERC20(TT2);
+
+    // Function to swap TT1 to TT2 using a single-hop swap.
+    // amountIn: Amount of TT1 the user wants to swap.
+    // amountOutMin: Minimum amount of TT2 that the user expects to receive.
+    function swapSingleHopExactAmountIn(uint256 amountIn, uint256 amountOutMin)
+        external
+        returns (uint256 amountOut)
+    {
+        // Transfers TT1 tokens from the user to the contract.
+        tt1.transferFrom(msg.sender, address(this), amountIn);
+        
+        // Approves the router to spend TT1 tokens.
+        tt1.approve(address(router), amountIn);
+
+        // Defines the swap path: from TT1 to TT2 (single-hop).
+        address[] memory path;
+        path = new address[](2);
+        path[0] = TT1;
+        path[1] = TT2;
+
+        // Executes the token swap on the router.
+        uint256[] memory amounts = router.swapExactTokensForTokens(
+            amountIn, amountOutMin, path, msg.sender, block.timestamp
+        );
+
+        // Returns the amount of TT2 received.
+        return amounts[1];
+    }
+
+    // Function to swap TT1 to TT2 through WETH (multi-hop swap).
+    // amountIn: Amount of TT1 the user wants to swap.
+    // amountOutMin: Minimum amount of TT2 expected from the swap.
+    function swapMultiHopExactAmountIn(uint256 amountIn, uint256 amountOutMin)
+        external
+        returns (uint256 amountOut)
+    {
+        // Transfers TT1 tokens from the user to the contract.
+        tt1.transferFrom(msg.sender, address(this), amountIn);
+        
+        // Approves the router to spend TT1 tokens.
+        tt1.approve(address(router), amountIn);
+
+        // Defines the swap path: from TT1 to WETH to TT2 (multi-hop).
+        address[] memory path;
+        path = new address[](3) ;
+        path[0] = TT1;
+        path[1] = WETH;
+        path[2] = TT2;
+
+        // Executes the multi-hop token swap on the router.
+        uint256[] memory amounts = router.swapExactTokensForTokens(
+            amountIn, amountOutMin, path, msg.sender, block.timestamp
+        );
+
+        // Returns the amount of TT2 received.
+        return amounts[2];
+    }
+
+    // Function to swap WETH to TT1 with a target output amount.
+    // amountOutDesired: Exact amount of TT1 the user wants.
+    // amountInMax: Maximum amount of WETH the user is willing to spend.
+    function swapSingleHopExactAmountOut(
+        uint256 amountOutDesired,
+        uint256 amountInMax
+    ) external returns (uint256 amountOut) {
+        // Transfers WETH tokens from the user to the contract.
+        weth.transferFrom(msg.sender, address(this), amountInMax);
+        
+        // Approves the router to spend WETH tokens.
+        weth.approve(address(router), amountInMax);
+
+        // Defines the swap path: from WETH to TT1.
+        address[] memory path;
+        path = new address[](2) ;
+        path[0] = WETH;
+        path[1] = TT1;
+
+        // Executes the swap with a target output (amountOutDesired).
+        uint256[] memory amounts = router.swapTokensForExactTokens(
+            amountOutDesired, amountInMax, path, msg.sender, block.timestamp
+        );
+
+        // Refunds any leftover WETH to the user if less than the maximum was used.
+        if (amounts[0] < amountInMax) {
+            weth.transfer(msg.sender, amountInMax - amounts[0]);
+        }
+
+        // Returns the amount of TT1 received.
+        return amounts[1];
+    }
+
+    // Function to swap TT1 to TT2 (via WETH) with a target output amount (multi-hop).
+    // amountOutDesired: Exact amount of TT2 the user wants.
+    // amountInMax: Maximum amount of TT1 the user is willing to spend.
+    function swapMultiHopExactAmountOut(
+        uint256 amountOutDesired,
+        uint256 amountInMax
+    ) external returns (uint256 amountOut) {
+        // Transfers TT1 tokens from the user to the contract.
+        tt1.transferFrom(msg.sender, address(this), amountInMax);
+        
+        // Approves the router to spend TT1 tokens.
+        tt1.approve(address(router), amountInMax);
+
+        // Defines the swap path: from TT1 to WETH to TT2.
+        address[] memory path;
+        path = new address[](3) ;
+        path[0] = TT1;
+        path[1] = WETH;
+        path[2] = TT2;
+
+        // Executes the swap with a target output (amountOutDesired).
+        uint256[] memory amounts = router.swapTokensForExactTokens(
+            amountOutDesired, amountInMax, path, msg.sender, block.timestamp
+        );
+
+        // Refunds any leftover TT1 to the user if less than the maximum was used.
+        if (amounts[0] < amountInMax) {
+            tt1.transfer(msg.sender, amountInMax - amounts[0]);
+        }
+
+        // Returns the amount of TT2 received.
+        return amounts[2];
+    }
+
+    // Function to add liquidity to a pool of two tokens.
+    // _tokenA: Address of the first token.
+    // _tokenB: Address of the second token.
+    // _amountA: Amount of the first token to be added as liquidity.
+    // _amountB: Amount of the second token to be added as liquidity.
+    function addLiquidity(
+        address _tokenA,
+        address _tokenB,
+        uint256 _amountA,
+        uint256 _amountB
+    ) external payable {
+        // Transfers tokens from the user to the contract.
+        IERC20(_tokenA).transferFrom(msg.sender, address(this), _amountA);
+        IERC20(_tokenB).transferFrom(msg.sender, address(this), _amountB);
+
+        // Approves the router to spend the transferred tokens.
+        IERC20(_tokenA).approve(ROUTER, _amountA);
+        IERC20(_tokenB).approve(ROUTER, _amountB);
+
+        // Adds liquidity to the Uniswap pool.
+        (uint256 amountA, uint256 amountB, uint256 liquidity) = IUniswapV2Router(
+            ROUTER
+        ).addLiquidity(
+            _tokenA,
+            _tokenB,
+            _amountA,
+            _amountB,
+            1,  // Minimum amount of tokenA.
+            1,  // Minimum amount of tokenB.
+            address(this),  // Liquidity is added for this contract.
+            block.timestamp
+        );
+
+        // Logs the amounts added and the liquidity created.
+        emit Log("amountA", amountA);
+        emit Log("amountB", amountB);
+        emit Log("Liquidity", liquidity);
+    }
+
+    // Function to remove liquidity from a pool of two tokens.
+    // _tokenA: Address of the first token.
+    // _tokenB: Address of the second token.
+    function removeLiquidity(address _tokenA, address _tokenB) external payable {
+        // Retrieves the pair address for the token pool from the factory.
+        address pair = IUniswapV2Factory(FACTORY).getPair(_tokenA, _tokenB);
+
+        // Retrieves the liquidity balance of the contract for the pool.
+        uint256 liquidity = IERC20(pair).balanceOf(address(this));
+        
+        // Approves the router to spend the liquidity tokens.
+        IERC20(pair).approve(ROUTER, liquidity);
+
+        // Removes liquidity from the pool and retrieves the token amounts.
+        (uint256 amountA, uint256 amountB) = IUniswapV2Router(ROUTER)
+            .removeLiquidity(
+            _tokenA, _tokenB, liquidity, 1, 1, address(this), block.timestamp
+        );
+
+        // Logs the amounts of tokens received after removing liquidity.
+        emit Log("amountA", amountA);
+        emit Log("amountB", amountB);
+    }
+}
+
+// Interface for interacting with Uniswap V2 Router.
 interface IUniswapV2Router {
-/* @notice Swap an exact amount of input tokens for as many output tokens as possible
-     @param amountIn The amount of input tokens to send
-     @param amountOutMin The minimum amount of output tokens that must be received for the transaction not to revert
-     @param path An array of token addresses for the swap path (e.g., [tokenA, tokenB])
-     @param to The address to receive the output tokens
-     @param deadline The time by which the transaction must be completed
-     @return amounts The input and output token amounts
-     */
-function swapExactTokensForTokens(
+    // Swaps an exact amount of tokens for as many output tokens as possible.
+    function swapExactTokensForTokens(
         uint256 amountIn,
         uint256 amountOutMin,
         address[] calldata path,
@@ -23,13 +222,7 @@ function swapExactTokensForTokens(
         uint256 deadline
     ) external returns (uint256[] memory amounts);
 
-    /* @notice Swap tokens to exactly receive a fixed amount of output tokens
-     @param amountOut The exact amount of output tokens to receive
-     @param amountInMax The maximum amount of input tokens that can be used
-     @param path An array of token addresses for the swap path
-     @param to The address to receive the output tokens
-     @param deadline The time by which the transaction must be completed
-     @return amounts The input and output token amounts */
+    // Swaps tokens for an exact amount of output tokens.
     function swapTokensForExactTokens(
         uint256 amountOut,
         uint256 amountInMax,
@@ -38,18 +231,7 @@ function swapExactTokensForTokens(
         uint256 deadline
     ) external returns (uint256[] memory amounts);
 
-    /*@notice Add liquidity to a Uniswap V2 pair
-      @param tokenA The address of the first token
-      @param tokenB The address of the second token
-      @param amountADesired The desired amount of tokenA to add as liquidity
-      @param amountBDesired The desired amount of tokenB to add as liquidity
-      @param amountAMin The minimum amount of tokenA that must be added
-      @param amountBMin The minimum amount of tokenB that must be added
-      @param to The address that will receive the liquidity tokens
-      @param deadline The time by which the transaction must be completed
-      @return amountA The actual amount of tokenA added
-      @return amountB The actual amount of tokenB added
-      @return liquidity The amount of liquidity tokens received */
+    // Adds liquidity to a pool of two tokens.
     function addLiquidity(
         address tokenA,
         address tokenB,
@@ -61,17 +243,7 @@ function swapExactTokensForTokens(
         uint256 deadline
     ) external returns (uint256 amountA, uint256 amountB, uint256 liquidity);
 
-    
-      /* @notice Remove liquidity from a Uniswap V2 pair
-      @param tokenA The address of the first token
-      @param tokenB The address of the second token
-      @param liquidity The amount of liquidity tokens to remove
-      @param amountAMin The minimum amount of tokenA to receive
-      @param amountBMin The minimum amount of tokenB to receive
-      @param to The address to receive the tokens
-      @param deadline The time by which the transaction must be completed
-      @return amountA The amount of tokenA received
-      @return amountB The amount of tokenB received */
+    // Removes liquidity from a pool of two tokens.
     function removeLiquidity(
         address tokenA,
         address tokenB,
@@ -83,198 +255,17 @@ function swapExactTokensForTokens(
     ) external returns (uint256 amountA, uint256 amountB);
 }
 
-/* @title IUniswapV2Factory Interface for Uniswap V2 Factory
-@notice Provides functions to interact with Uniswap pairs */
+// Interface for interacting with Uniswap V2 Factory.
 interface IUniswapV2Factory {
-    /* @notice Get the address of the pair for two tokens
-     @param token0 The address of the first token
-     @param token1 The address of the second token
-     @return The address of the pair */
+    // Retrieves the pair address for a token pair.
     function getPair(address token0, address token1)
         external
         view
         returns (address);
 }
 
-/* @title IWETH Interface for Wrapped Ether (WETH)
- @notice Provides functions to interact with WETH, a tokenized version of Ether */
+// WETH (wrapped ETH) interface that includes deposit and withdrawal functionality.
 interface IWETH is IERC20 {
-    // @notice Deposit Ether and receive WETH tokens
     function deposit() external payable;
-
-    /* @notice Withdraw WETH and receive Ether
-    @param amount The amount of WETH to withdraw */
     function withdraw(uint256 amount) external;
-}
-
-/* @title A Decentralized Exchange Platform
- @notice A smart contract for swapping tokens and managing liquidity on Uniswap V2 */
-contract dexPlatform {
-
-    /* @notice Log information related to transactions
-     @param message A message describing the log event
-     @param value The value associated with the event (e.g., token amount, liquidity amount) */
-    event Log(string message, uint256 value);
-    /* Here the Factory, ROUTER, WETH, tt1, tt2 are the address of contracts deployed on polygon amoy */
-
-    address private constant FACTORY = 0xd2a5bC10698FD955D1Fe6cb468a17809A08fd005;
-    address private constant ROUTER = 0xb27A31f1b0AF2946B7F582768f03239b1eC07c2c;
-    address private constant WETH = 0xddaAd340b0f1Ef65169Ae5E41A8b10776a75482d;
-    address private constant tt1 = 0xcD6a42782d230D7c13A74ddec5dD140e55499Df9;
-    address private constant tt2 = 0xaE036c65C649172b43ef7156b009c6221B596B8b;
-
-    IUniswapV2Router private router = IUniswapV2Router(ROUTER);
-    IERC20 private weth = IERC20(WETH);
-    IERC20 private TT1 = IERC20(tt1);
-
-    /* @notice Swap WETH for TT1 tokens
-     @param amountIn The amount of WETH to swap
-     @param amountOutMin The minimum amount of TT1 tokens to receive
-     @return amountOut The amount of TT1 tokens received */
-    function swapSingleHopExactAmountIn(uint256 amountIn, uint256 amountOutMin)
-        external
-        returns (uint256 amountOut)
-    {
-        weth.transferFrom(msg.sender, address(this), amountIn);
-        weth.approve(address(router), amountIn);
-
-        address[] memory path = new address[](2);
-        path[0] = WETH;
-        path[1] = tt1;
-
-        uint256[] memory amounts = router.swapExactTokensForTokens(
-            amountIn, amountOutMin, path, msg.sender, block.timestamp
-        );
-
-        return amounts[1];
-    }
-
-    /* @notice Swap TT1 for TT2 via WETH (Multi-hop swap)
-     @param amountIn The amount of TT1 to swap
-     @param amountOutMin The minimum amount of TT2 to receive
-     @return amountOut The amount of TT2 tokens received */
-    function swapMultiHopExactAmountIn(uint256 amountIn, uint256 amountOutMin)
-        external
-        returns (uint256 amountOut)
-    {
-        TT1.transferFrom(msg.sender, address(this), amountIn);
-        TT1.approve(address(router), amountIn);
-
-        address[] memory path = new address[](3);
-        path[0] = tt1;
-        path[1] = WETH;
-        path[2] = tt2;
-
-        uint256[] memory amounts = router.swapExactTokensForTokens(
-            amountIn, amountOutMin, path, msg.sender, block.timestamp
-        );
-
-        return amounts[2];
-    }
-
-    /* @notice Swap WETH for a fixed amount of TT1 tokens
-     @param amountOutDesired The exact amount of TT1 tokens to receive
-     @param amountInMax The maximum amount of WETH to use for the swap
-     @return amountOut The amount of TT1 tokens received */
-    function swapSingleHopExactAmountOut(
-        uint256 amountOutDesired,
-        uint256 amountInMax
-    ) external returns (uint256 amountOut) {
-        weth.transferFrom(msg.sender, address(this), amountInMax);
-        weth.approve(address(router), amountInMax);
-
-        address[] memory path = new address[](2);
-        path[0] = WETH;
-        path[1] = tt1;
-
-        uint256[] memory amounts = router.swapTokensForExactTokens(
-            amountOutDesired, amountInMax, path, msg.sender, block.timestamp
-        );
-
-        if (amounts[0] < amountInMax) {
-            weth.transfer(msg.sender, amountInMax - amounts[0]);
-        }
-
-        return amounts[1];
-    }
-
-    /* @notice Swap TT1 for a fixed amount of TT2 via WETH (Multi-hop swap)
-     @param amountOutDesired The exact amount of TT2 tokens to receive
-     @param amountInMax The maximum amount of TT1 to use for the swap
-     @return amountOut The amount of TT2 tokens received */
-    function swapMultiHopExactAmountOut(
-        uint256 amountOutDesired,
-        uint256 amountInMax
-    ) external returns (uint256 amountOut) {
-        TT1.transferFrom(msg.sender, address(this), amountInMax);
-        TT1.approve(address(router), amountInMax);
-
-        address[] memory path = new address[](3);
-        path[0] = tt1;
-        path[1] = WETH;
-        path[2] = tt2;
-
-        uint256[] memory amounts = router.swapTokensForExactTokens(
-            amountOutDesired, amountInMax, path, msg.sender, block.timestamp
-        );
-
-        if (amounts[0] < amountInMax) {
-            TT1.transfer(msg.sender, amountInMax - amounts[0]);
-        }
-
-        return amounts[2];
-    }
-
-    /* @notice Add liquidity to a Uniswap V2 pair
-     @param _tokenA The address of the first token
-     @param _tokenB The address of the second token
-     @param _amountA The amount of tokenA to add
-     @param _amountB The amount of tokenB to add */
-    function addLiquidity(
-        address _tokenA,
-        address _tokenB,
-        uint256 _amountA,
-        uint256 _amountB
-    ) external payable {
-        IERC20(_tokenA).transferFrom(msg.sender, address(this), _amountA);
-        IERC20(_tokenB).transferFrom(msg.sender, address(this), _amountB);
-
-        IERC20(_tokenA).approve(ROUTER, _amountA);
-        IERC20(_tokenB).approve(ROUTER, _amountB);
-
-        (uint256 amountA, uint256 amountB, uint256 liquidity) = IUniswapV2Router(
-            ROUTER
-        ).addLiquidity(
-            _tokenA,
-            _tokenB,
-            _amountA,
-            _amountB,
-            1,
-            1,
-            address(this),
-            block.timestamp
-        );
-
-        emit Log("amountA", amountA);
-        emit Log("amountB", amountB);
-        emit Log("Liquidity", liquidity);
-    }
-
-    /* @notice Remove liquidity from a Uniswap V2 pair
-     @param _tokenA The address of the first token
-     @param _tokenB The address of the second token */
-    function removeLiquidity(address _tokenA, address _tokenB) external payable{
-        address pair = IUniswapV2Factory(FACTORY).getPair(_tokenA, _tokenB);
-
-        uint256 liquidity = IERC20(pair).balanceOf(address(this));
-        IERC20(pair).approve(ROUTER, liquidity);
-
-        (uint256 amountA, uint256 amountB) = IUniswapV2Router(ROUTER)
-            .removeLiquidity(
-            _tokenA, _tokenB, liquidity, 1, 1, address(this), block.timestamp
-        );
-
-        emit Log("amountA", amountA);
-        emit Log("amountB", amountB);
-    }
 }
