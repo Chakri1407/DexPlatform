@@ -10,7 +10,7 @@ The `dexPlatform` smart contract is designed to interact with a decentralized ex
 The contract is built using Solidity and leverages Uniswap's router and factory interfaces for liquidity management and token swaps.
 
 ## Contract Details
-
+The smart contracts have been deployed on the Polygon Amoy Testnet.
 ### Addresses
 - **FACTORY**:[0x330158E42De9e04d12f42711d00eF3C4ed03D27a](https://amoy.polygonscan.com/address/0x330158E42De9e04d12f42711d00eF3C4ed03D27a) 
 The address of the Uniswap factory used to get the pair address for liquidity pools.
