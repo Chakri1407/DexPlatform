@@ -3,7 +3,7 @@
 
 ## Overview
 
-The `dexPlatform` smart contract is designed to interact with a decentralized exchange (DEX) platform like Uniswap. It allows users to:
+The `dexPlatform` smart contract is designed to interact with a decentralized exchange (DEX) platform using Uniswap smart contracts. It allows users to:
 - Swap tokens (WETH, TT1, and TT2) with both single-hop and multi-hop swaps.
 - Add and remove liquidity to/from a liquidity pool.
 
