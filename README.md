@@ -79,8 +79,8 @@ Before you interact with this contract, ensure the following:
 ``` npx hardhat test ``` 
 
 
-## Running Tests
-We provide sample unit tests written using Hardhat's test framework. These tests cover:
+## Running Testsu
+Unit tests are written using Hardhat's test framework. These tests cover:
 
 Token swapping (single-hop and multi-hop).
 Adding and removing liquidity.
