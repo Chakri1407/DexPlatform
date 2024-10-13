@@ -11,11 +11,11 @@ contract dexPlatform {
     event Log(string message, uint256 value);
 
     // Deployed addresses for the Uniswap factory, router, WETH, and custom tokens (TT1 and TT2).
-    address private constant FACTORY = 0x330158E42De9e04d12f42711d00eF3C4ed03D27a;
-    address private constant ROUTER = 0x84882A460D3F7bd1a2fa98ed1470D2870C914398;
-    address private constant WETH = 0x4cA4ca0ebC0b16E4D44C0C66C6b3f8411af7446a;
-    address private constant TT1 = 0x01FBe68E011E86891DE01eE8c7350Ffb8465D769;
-    address private constant TT2 = 0xa0F9970aB4c2C8234962eA3F97522fa1cdd590EC;
+    address private constant FACTORY = 0x893fF7f3E7EAC105B551FA193C94e0B01a815969;
+    address private constant ROUTER = 0xa5Bc7853e29460a5e7e848EF596E90081c04066D;
+    address private constant WETH = 0x825724f0C5ce67119B69686023D4a7674dE969ad;
+    address private constant TT1 = 0x6E87Ca86C2b28d8dF27924Ca51b73BCCA6508742;
+    address private constant TT2 = 0x9e09ffb967623338867A39D769f31a869FD3Fa97;
 
     // Creating instances of the router and token contracts to interact with them.
     IUniswapV2Router private router = IUniswapV2Router(ROUTER);
