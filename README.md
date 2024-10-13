@@ -64,17 +64,17 @@ This contract handles the heavy lifting of liquidity provision, token swaps, and
 The smart contracts have been successfully deployed and verified on the Polygon Amoy Testnet. All code comments follow the NatSpec format for enhanced readability and documentation.
 
 ### Addresses
-- 🏭 **FACTORY**:[0x893fF7f3E7EAC105B551FA193C94e0B01a815969](https://amoy.polygonscan.com/address/0x330158E42De9e04d12f42711d00eF3C4ed03D27a) 
+- 🏭 **FACTORY**:[0x893fF7f3E7EAC105B551FA193C94e0B01a815969](https://amoy.polygonscan.com/address/0x893fF7f3E7EAC105B551FA193C94e0B01a815969) 
 The address of the Uniswap factory used to get the pair address for liquidity pools.
-- 📦 **ROUTER**:[0xa5Bc7853e29460a5e7e848EF596E90081c04066D](https://amoy.polygonscan.com/address/0x84882A460D3F7bd1a2fa98ed1470D2870C914398) 
+- 📦 **ROUTER**:[0xa5Bc7853e29460a5e7e848EF596E90081c04066D](https://amoy.polygonscan.com/address/0xa5Bc7853e29460a5e7e848EF596E90081c04066D) 
 The address of the Uniswap router used for swaps and liquidity management.
-- ⚡ **WETH**:[0x825724f0C5ce67119B69686023D4a7674dE969ad](https://amoy.polygonscan.com/address/0x4cA4ca0ebC0b16E4D44C0C66C6b3f8411af7446a) 
+- ⚡ **WETH**:[0x825724f0C5ce67119B69686023D4a7674dE969ad](https://amoy.polygonscan.com/address/0x825724f0C5ce67119B69686023D4a7674dE969ad) 
 The address of the Wrapped Ether (WETH) token.
-- 💠 **TT1**:[0x6E87Ca86C2b28d8dF27924Ca51b73BCCA6508742](https://amoy.polygonscan.com/address/0x01FBe68E011E86891DE01eE8c7350Ffb8465D769) 
+- 💠 **TT1**:[0x6E87Ca86C2b28d8dF27924Ca51b73BCCA6508742](https://amoy.polygonscan.com/address/0x6E87Ca86C2b28d8dF27924Ca51b73BCCA6508742) 
 The address of Test Token 1 (TT1).
-- 💎 **TT2**:[0x9e09ffb967623338867A39D769f31a869FD3Fa97](https://amoy.polygonscan.com/address/0xa0F9970aB4c2C8234962eA3F97522fa1cdd590EC) 
+- 💎 **TT2**:[0x9e09ffb967623338867A39D769f31a869FD3Fa97](https://amoy.polygonscan.com/address/0x9e09ffb967623338867A39D769f31a869FD3Fa97) 
 The address of Test Token 2 (TT2).
-- 🔄 **Dex**:- [0x286A67da1241Fe40aC7a3f6ee9C3a1607B90d1Ec](https://amoy.polygonscan.com/address/0x56b875BD3e2D4E145FFa2905fDfed69E8E7EcAaA) 
+- 🔄 **Dex**:- [0x286A67da1241Fe40aC7a3f6ee9C3a1607B90d1Ec](https://amoy.polygonscan.com/address/0x286A67da1241Fe40aC7a3f6ee9C3a1607B90d1Ec#writeContract) 
 The adress of the DexPlatform.
 
 ### ⚙️  Key Functions
